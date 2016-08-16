@@ -1,3 +1,4 @@
-from .base import KaffeError
-from .core import GraphBuilder, DataReshaper, NodeMapper
+from .graph import GraphBuilder, NodeMapper
+from .errors import KaffeError, print_stderr
+
 from . import tensorflow
