@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import caffe
 import os
 import sys
 import numpy as np
