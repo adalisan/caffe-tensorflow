@@ -134,7 +134,7 @@ class Network(object):
                 kernel_groups = tf.split(kernel, group, axis=3)
                 output_groups = [convolve(i, k) for i, k in zip(input_groups, kernel_groups)]
                 # Concatenate the groups
-                output = tf.concat_v2(output_groups, axis=3)
+                output = tf.concat(output_groups, axis=3)
             # Add the biases
             if biased:
                 biases = self.make_var('biases', [c_o])
