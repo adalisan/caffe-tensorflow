@@ -184,6 +184,10 @@ class Network(object):
         return tf.add_n(inputs, name=name)
 
     @layer
+    def squeeze(self, input, dims, name):
+        return tf.squeeze(input, axis=dims, name=name)
+
+    @layer
     def fc(self, input, num_out, name, relu=True):
         with tf.variable_scope(name) as scope:
             input_shape = input.get_shape()
