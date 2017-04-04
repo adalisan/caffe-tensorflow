@@ -7,10 +7,18 @@ TensorShape = namedtuple('TensorShape', ['batch_size', 'channels', 'height', 'wi
 
 
 def get_filter_output_shape(i_h, i_w, params, round_func):
-    o_h = (i_h + 2 * params.pad_h - params.kernel_h) / float(params.stride_h) + 1
-    o_w = (i_w + 2 * params.pad_w - params.kernel_w) / float(params.stride_w) + 1
-    return (int(round_func(o_h)), int(round_func(o_w)))
 
+    #const int input_dim = this->input_shape(i + 1);
+    #const int kernel_extent = dilation_data[i] * (kernel_shape_data[i] - 1) + 1;
+    #const int output_dim = (input_dim + 2 * pad_data[i] - kernel_extent)
+    #    / stride_data[i] + 1;
+
+    def _get_dim(input_dim, dil, ks, pad, stride):
+        kernel_extent = dil*(ks-1)+1
+        return (input_dim+2*pad-kernel_extent)/stride+1
+    o_h = _get_dim(i_h, params.dilation, params.kernel_h, params.pad_h, params.stride_h)
+    o_w = _get_dim(i_w, params.dilation, params.kernel_w, params.pad_w, params.stride_w)
+    return (int(round_func(o_h)), int(round_func(o_w)))
 
 def get_strided_kernel_output_shape(node, round_func):
     assert node.layer is not None

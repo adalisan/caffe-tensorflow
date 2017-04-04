@@ -109,6 +109,7 @@ class Network(object):
              c_o,
              s_h,
              s_w,
+             rate,
              name,
              relu=True,
              padding=DEFAULT_PADDING,
@@ -122,7 +123,10 @@ class Network(object):
         assert c_i % group == 0
         assert c_o % group == 0
         # Convolution for a given input and kernel
-        convolve = lambda i, k: tf.nn.conv2d(i, k, [1, s_h, s_w, 1], padding=padding)
+        if d_h == 1 and d_w == 1:
+            convolve = lambda i, k: tf.nn.conv2d(i, k, [1, s_h, s_w, 1], padding=padding)
+        else:
+            convolve = lambda i, k: tf.nn.atrous_conv2d(i, k, [1, s_h, s_w, 1], rate, padding=padding)
         with tf.variable_scope(name) as scope:
             kernel = self.make_var('weights', shape=[k_h, k_w, c_i / group, c_o])
             if group == 1:

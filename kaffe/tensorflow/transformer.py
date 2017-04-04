@@ -17,11 +17,13 @@ def get_padding_type(kernel_params, input_shape, output_shape):
     how the padding edge-cases are handled. These are described here:
     https://github.com/Yangqing/caffe2/blob/master/caffe2/proto/caffe2_legacy.proto
     '''
-    k_h, k_w, s_h, s_w, p_h, p_w = kernel_params
+    k_h, k_w, s_h, s_w, p_h, p_w, dil = kernel_params
     s_o_h = np.ceil(input_shape.height / float(s_h))
     s_o_w = np.ceil(input_shape.width / float(s_w))
     if (output_shape.height == s_o_h) and (output_shape.width == s_o_w):
         return 'SAME'
+    k_h = dil*(k_h-1)+1
+    k_w = dil*(k_w-1)+1
     v_o_h = np.ceil((input_shape.height - k_h + 1.0) / float(s_h))
     v_o_w = np.ceil((input_shape.width - k_w + 1.0) / float(s_w))
     if (output_shape.height == v_o_h) and (output_shape.width == v_o_w):
@@ -98,8 +100,11 @@ class TensorFlowMapper(NodeMapper):
             kwargs['biased'] = False
         assert kernel_params.kernel_h == h
         assert kernel_params.kernel_w == w
-        return MaybeActivated(node)('conv', kernel_params.kernel_h, kernel_params.kernel_w, c_o,
-                                    kernel_params.stride_h, kernel_params.stride_w, **kwargs)
+        return MaybeActivated(node)('conv',
+                kernel_params.kernel_h, kernel_params.kernel_w, c_o,
+                kernel_params.stride_h, kernel_params.stride_w,
+                kernel_params.dilation,
+                **kwargs)
 
     def map_relu(self, node):
         return TensorFlowNode('relu')
