@@ -228,6 +228,18 @@ class Network(object):
         return tf.nn.softmax(input, name=name)
 
     @layer
+    def normalize(self, input, name):
+        with tf.variable_scope(name) as scope:
+            feat = tf.nn.l2_normalize(input, dim=[3])
+            dim = feat.shape[-1].value
+            scale = self.make_var('scale', shape=[dim])
+            feat = feat * scale
+            return feat
+
+
+        return tf.add_n(inputs, name=name)
+
+    @layer
     def batch_normalization(self, input, name, scale_offset=True, relu=False, epsilon=1e-5):
         # NOTE: Currently, only inference is supported
         with tf.variable_scope(name) as scope:

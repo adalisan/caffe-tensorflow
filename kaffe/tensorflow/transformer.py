@@ -150,6 +150,9 @@ class TensorFlowMapper(NodeMapper):
     def map_dropout(self, node):
         return TensorFlowNode('dropout', node.parameters.dropout_ratio)
 
+    def map_normalize(self, node):
+        return TensorFlowNode('normalize')
+
     def map_batch_norm(self, node):
         scale_offset = len(node.data) == 4
         kwargs = {} if scale_offset else {'scale_offset': False}
