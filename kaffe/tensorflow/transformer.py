@@ -153,6 +153,7 @@ class TensorFlowMapper(NodeMapper):
     def map_batch_norm(self, node):
         scale_offset = len(node.data) == 4
         kwargs = {} if scale_offset else {'scale_offset': False}
+        kwargs['epsilon'] = node.parameters.eps
         return MaybeActivated(node, default=False)('batch_normalization', **kwargs)
 
     def map_eltwise(self, node):

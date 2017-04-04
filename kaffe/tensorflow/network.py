@@ -228,7 +228,7 @@ class Network(object):
         return tf.nn.softmax(input, name=name)
 
     @layer
-    def batch_normalization(self, input, name, scale_offset=True, relu=False):
+    def batch_normalization(self, input, name, scale_offset=True, relu=False, epsilon=1e-5):
         # NOTE: Currently, only inference is supported
         with tf.variable_scope(name) as scope:
             shape = [input.get_shape()[-1]]
@@ -243,9 +243,7 @@ class Network(object):
                 variance=self.make_var('variance', shape=shape),
                 offset=offset,
                 scale=scale,
-                # TODO: This is the default Caffe batch norm eps
-                # Get the actual eps from parameters
-                variance_epsilon=1e-5,
+                variance_epsilon=epsilon,
                 name=name)
             if relu:
                 output = tf.nn.relu(output)
