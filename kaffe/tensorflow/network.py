@@ -67,7 +67,7 @@ class Network(object):
                     except ValueError:
                         if not ignore_missing:
                             raise
-        sess.run(updates)
+        session.run(updates)
 
     def feed(self, *args):
         '''Set the input(s) for the next operation by replacing the terminal nodes.
