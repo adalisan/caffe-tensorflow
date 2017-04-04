@@ -57,15 +57,17 @@ class Network(object):
         ignore_missing: If true, serialized weights for missing layers are ignored.
         '''
         data_dict = np.load(data_path).item()
+        updates = []
         for op_name in data_dict:
             with tf.variable_scope(op_name, reuse=True):
                 for param_name, data in data_dict[op_name].iteritems():
                     try:
                         var = tf.get_variable(param_name)
-                        session.run(var.assign(data))
+                        updates.append(var.assign(data))
                     except ValueError:
                         if not ignore_missing:
                             raise
+        sess.run(updates)
 
     def feed(self, *args):
         '''Set the input(s) for the next operation by replacing the terminal nodes.
