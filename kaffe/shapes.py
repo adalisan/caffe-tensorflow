@@ -14,7 +14,7 @@ def get_filter_output_shape(i_h, i_w, params, round_func):
     #    / stride_data[i] + 1;
 
     def _get_dim(input_dim, dil, ks, pad, stride):
-        kernel_extent = dil*(ks-1)+1
+        kernel_extent = dil*(ks-1)+1.
         return (input_dim+2*pad-kernel_extent)/stride+1
     o_h = _get_dim(i_h, params.dilation, params.kernel_h, params.pad_h, params.stride_h)
     o_w = _get_dim(i_w, params.dilation, params.kernel_w, params.pad_w, params.stride_w)
